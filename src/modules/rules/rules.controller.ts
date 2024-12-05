@@ -11,8 +11,6 @@ export class RulesController {
     query: Record<string, any>,
   ) {
     const facts = {
-      age: query.age ? Number(query.age) : undefined,
-      salary: query.salary ? Number(query.salary) : undefined,
       noBedrooms: query.noBedrooms ? Number(query.noBedrooms) : undefined,
       radiators: query.radiators ? Number(query.radiators) : undefined,
       insulationLevel: query.insulationLevel
