@@ -10,7 +10,7 @@ const hotWaterCylider = [
       ],
     },
     event: {
-      type: 'liter',
+      type: 'hotWaterCylinderSize',
       params: {
         value: 100,
       },
@@ -27,7 +27,7 @@ const hotWaterCylider = [
       ],
     },
     event: {
-      type: 'liter',
+      type: 'hotWaterCylinderSize',
       params: {
         value: 135,
       },
@@ -44,7 +44,7 @@ const hotWaterCylider = [
       ],
     },
     event: {
-      type: 'liter',
+      type: 'hotWaterCylinderSize',
       params: {
         value: 180,
       },
@@ -61,7 +61,7 @@ const hotWaterCylider = [
       ],
     },
     event: {
-      type: 'liter',
+      type: 'hotWaterCylinderSize',
       params: {
         value: 225,
       },
@@ -78,7 +78,7 @@ const hotWaterCylider = [
       ],
     },
     event: {
-      type: 'liter',
+      type: 'hotWaterCylinderSize',
       params: {
         value: 270,
       },
@@ -95,7 +95,7 @@ const hotWaterCylider = [
       ],
     },
     event: {
-      type: 'liter',
+      type: 'hotWaterCylinderSize',
       params: {
         value: 100,
       },

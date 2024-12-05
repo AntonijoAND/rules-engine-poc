@@ -8,15 +8,7 @@ export class RulesController {
   @Get('evaluate')
   async evaluate(
     @Query()
-    query: {
-      age?: number;
-      salary?: number;
-      noBedrooms?: number;
-      radiators?: number;
-      insulationLevel?: string;
-      propertyType?: string;
-      noRooms?: number;
-    },
+    query: Record<string, any>,
   ) {
     const facts = {
       age: query.age ? Number(query.age) : undefined,
@@ -30,10 +22,6 @@ export class RulesController {
       noRooms: query.noRooms ? query.noRooms : undefined,
     };
 
-    const results = await this.rulesService.evaluate(facts);
-
-    return results.events.map(
-      (event) => event.params.message || event.params.value,
-    );
+    return this.rulesService.evaluate(facts);
   }
 }

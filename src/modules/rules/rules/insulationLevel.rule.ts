@@ -10,7 +10,7 @@ const insulationLevel = [
       ],
     },
     event: {
-      type: 'level',
+      type: 'insulationLevel',
       params: {
         value: 3.5,
       },
@@ -27,7 +27,7 @@ const insulationLevel = [
       ],
     },
     event: {
-      type: 'level',
+      type: 'insulationLevel',
       params: {
         value: 2.8,
       },
@@ -44,7 +44,7 @@ const insulationLevel = [
       ],
     },
     event: {
-      type: 'level',
+      type: 'insulationLevel',
       params: {
         value: 2,
       },

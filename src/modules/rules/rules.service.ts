@@ -33,11 +33,16 @@ export class RulesService implements OnModuleInit {
     }
   }
 
-  async evaluate(facts: Record<string, any>) {
-    return await this.engine.run(facts);
-  }
-
   addRule(rule: any) {
     this.engine.addRule(rule);
+  }
+
+  async evaluate(facts: Record<string, any>) {
+    const results = await this.engine.run(facts);
+
+    return results.events.map((event) => ({
+      type: event.type,
+      value: event.params.value,
+    }));
   }
 }

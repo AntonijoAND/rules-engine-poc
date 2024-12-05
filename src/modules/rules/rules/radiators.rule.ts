@@ -10,7 +10,7 @@ const radiators = [
       ],
     },
     event: {
-      type: 'price',
+      type: 'radiatorsPrice',
       params: {
         value: 800,
       },
@@ -27,7 +27,7 @@ const radiators = [
       ],
     },
     event: {
-      type: 'price',
+      type: 'radiatorsPrice',
       params: {
         value: 1000,
       },
@@ -44,7 +44,7 @@ const radiators = [
       ],
     },
     event: {
-      type: 'price',
+      type: 'radiatorsPrice',
       params: {
         value: 1200,
       },
@@ -61,7 +61,7 @@ const radiators = [
       ],
     },
     event: {
-      type: 'price',
+      type: 'radiatorsPrice',
       params: {
         value: 1400,
       },
@@ -78,7 +78,7 @@ const radiators = [
       ],
     },
     event: {
-      type: 'price',
+      type: 'radiatorsPrice',
       params: {
         value: 1600,
       },
@@ -95,7 +95,7 @@ const radiators = [
       ],
     },
     event: {
-      type: 'price',
+      type: 'radiatorsPrice',
       params: {
         value: 1800,
       },
