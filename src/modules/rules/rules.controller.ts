@@ -10,17 +10,7 @@ export class RulesController {
     @Query()
     query: Record<string, any>,
   ) {
-    const facts = {
-      noBedrooms: query.noBedrooms ? Number(query.noBedrooms) : undefined,
-      radiators: query.radiators ? Number(query.radiators) : undefined,
-      insulationLevel: query.insulationLevel
-        ? query.insulationLevel
-        : undefined,
-      propertyType: query.propertyType ? query.propertyType : undefined,
-      noRooms: query.noRooms ? query.noRooms : undefined,
-    };
-
-    return this.rulesService.evaluate(facts);
+    return this.rulesService.evaluate(query);
   }
 
   @Get('/calculate')
@@ -28,16 +18,6 @@ export class RulesController {
     @Query()
     query: Record<string, any>,
   ) {
-    const facts = {
-      noBedrooms: query.noBedrooms ? Number(query.noBedrooms) : undefined,
-      radiators: query.radiators ? Number(query.radiators) : undefined,
-      insulationLevel: query.insulationLevel
-        ? query.insulationLevel
-        : undefined,
-      propertyType: query.propertyType ? query.propertyType : undefined,
-      noRooms: query.noRooms ? query.noRooms : undefined,
-    };
-
-    return this.rulesService.calculate(facts, query.temperatureDifference);
+    return this.rulesService.calculate(query);
   }
 }

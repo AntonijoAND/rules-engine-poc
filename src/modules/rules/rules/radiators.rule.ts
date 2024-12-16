@@ -4,7 +4,7 @@ const radiators = [
       all: [
         {
           fact: 'radiators',
-          operator: 'equal',
+          operator: 'lessThanInclusive',
           value: 4,
         },
       ],

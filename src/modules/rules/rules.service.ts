@@ -6,6 +6,7 @@ import * as path from 'path';
 @Injectable()
 export class RulesService implements OnModuleInit {
   private engine: Engine;
+  private rules: any[] = [];
 
   constructor() {
     this.engine = new Engine();
@@ -25,7 +26,10 @@ export class RulesService implements OnModuleInit {
         const rules = ruleModule.default || ruleModule;
 
         if (Array.isArray(rules)) {
-          rules.forEach((rule) => this.engine.addRule(rule));
+          rules.forEach((rule) => {
+            this.engine.addRule(rule);
+            this.rules.push(rule);
+          });
         } else {
           console.warn(`File ${file} does not export an array of rules.`);
         }
@@ -35,9 +39,30 @@ export class RulesService implements OnModuleInit {
 
   addRule(rule: any) {
     this.engine.addRule(rule);
+    this.rules.push(rule);
   }
 
-  async evaluate(facts: Record<string, any>) {
+  private extractFactsFromQuery(query: Record<string, any>) {
+    const facts: Record<string, any> = {};
+
+    for (const rule of this.rules) {
+      for (const condition of rule.conditions.all) {
+        const factName = condition.fact;
+
+        if (query[factName] !== undefined) {
+          facts[factName] = isNaN(query[factName])
+            ? query[factName]
+            : Number(query[factName]);
+        }
+      }
+    }
+
+    return facts;
+  }
+
+  async evaluate(query: Record<string, any>) {
+    const facts = this.extractFactsFromQuery(query);
+
     const results = await this.engine.run(facts);
 
     return results.events.map((event) => ({
@@ -46,7 +71,7 @@ export class RulesService implements OnModuleInit {
     }));
   }
 
-  async calculate(facts: Record<string, any>, temperatureDifference: string) {
+  async calculate(facts: Record<string, any>) {
     const data = await this.evaluate(facts);
 
     console.log('DATA', data);
@@ -63,7 +88,8 @@ export class RulesService implements OnModuleInit {
     )?.value;
 
     const heatPumpSize =
-      (floorArea * heatLossCoefficient * Number(temperatureDifference)) / 1000;
+      (floorArea * heatLossCoefficient * Number(facts.temperatureDifference)) /
+      1000;
 
     console.log('HEAT PUMP SIZE', heatPumpSize);
 
