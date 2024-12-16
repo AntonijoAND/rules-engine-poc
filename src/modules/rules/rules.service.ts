@@ -71,30 +71,26 @@ export class RulesService implements OnModuleInit {
     }));
   }
 
-  async calculate(facts: Record<string, any>) {
+  async calculate(facts: Record<string, any>): Promise<number> {
     const data = await this.evaluate(facts);
 
     console.log('DATA', data);
 
-    const floorArea = data.find((item) => item.type === 'floorArea')?.value;
-    const heatLossCoefficient = data.find(
-      (item) => item.type === 'heatLossCoeficient',
-    )?.value;
-    const radiatorsPrice = data.find(
-      (item) => item.type === 'radiatorsPrice',
-    )?.value;
-    const hotWaterCylinderSize = data.find(
-      (item) => item.type === 'hotWaterCylinderSize',
-    )?.value;
+    const {
+      floorArea = 0,
+      heatLossCoeficient: heatLossCoefficient = 0,
+      radiatorsPrice = 0,
+      hotWaterCylinderSize = 0,
+    } = Object.fromEntries(data.map(({ type, value }) => [type, value]));
 
     const heatPumpSize =
-      (floorArea * heatLossCoefficient * Number(facts.temperatureDifference)) /
+      (floorArea *
+        heatLossCoefficient *
+        Number(facts.temperatureDifference || 0)) /
       1000;
 
     console.log('HEAT PUMP SIZE', heatPumpSize);
 
-    const totalPrice = heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
-
-    return totalPrice;
+    return heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
   }
 }
