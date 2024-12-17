@@ -10,7 +10,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '2',
+          value: 2,
         },
       ],
     },
@@ -32,7 +32,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '3',
+          value: 3,
         },
       ],
     },
@@ -54,7 +54,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '4',
+          value: 4,
         },
       ],
     },
@@ -76,7 +76,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '5',
+          value: 5,
         },
       ],
     },
@@ -98,7 +98,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'greaterThanInclusive',
-          value: '6',
+          value: 6,
         },
       ],
     },
@@ -120,7 +120,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '2',
+          value: 2,
         },
       ],
     },
@@ -142,7 +142,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '3',
+          value: 3,
         },
       ],
     },
@@ -164,7 +164,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '4',
+          value: 4,
         },
       ],
     },
@@ -186,7 +186,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '5',
+          value: 5,
         },
       ],
     },
@@ -208,7 +208,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'greaterThanInclusive',
-          value: '6',
+          value: 6,
         },
       ],
     },
@@ -230,7 +230,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '2',
+          value: 2,
         },
       ],
     },
@@ -252,7 +252,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '3',
+          value: 3,
         },
       ],
     },
@@ -274,7 +274,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '4',
+          value: 4,
         },
       ],
     },
@@ -296,7 +296,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '5',
+          value: 5,
         },
       ],
     },
@@ -318,7 +318,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'greaterThanInclusive',
-          value: '6',
+          value: 6,
         },
       ],
     },
@@ -340,7 +340,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '2',
+          value: 2,
         },
       ],
     },
@@ -362,7 +362,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '3',
+          value: 3,
         },
       ],
     },
@@ -384,7 +384,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '4',
+          value: 4,
         },
       ],
     },
@@ -406,7 +406,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'equal',
-          value: '5',
+          value: 5,
         },
       ],
     },
@@ -428,7 +428,7 @@ const floorArea = [
         {
           fact: 'noRooms',
           operator: 'greaterThanInclusive',
-          value: '6',
+          value: 6,
         },
       ],
     },

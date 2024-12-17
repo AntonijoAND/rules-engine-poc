@@ -97,7 +97,7 @@ const hotWaterCylider = [
     event: {
       type: 'hotWaterCylinderSize',
       params: {
-        value: 100,
+        value: 300,
       },
     },
   },

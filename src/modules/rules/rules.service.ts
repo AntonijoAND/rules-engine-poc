@@ -44,16 +44,25 @@ export class RulesService implements OnModuleInit {
 
   private extractFactsFromQuery(query: Record<string, any>) {
     const facts: Record<string, any> = {};
+    const factSet = new Set<string>();
 
     for (const rule of this.rules) {
       for (const condition of rule.conditions.all) {
-        const factName = condition.fact;
+        factSet.add(condition.fact);
+      }
+    }
 
-        if (query[factName] !== undefined) {
-          facts[factName] = isNaN(query[factName])
-            ? query[factName]
-            : Number(query[factName]);
-        }
+    for (const factName of factSet) {
+      if (query[factName] !== undefined) {
+        const rawValue = query[factName];
+        const factValue = isNaN(rawValue) ? rawValue : Number(rawValue);
+        facts[factName] = factValue;
+
+        console.log(
+          `Extracted Fact - Name: ${factName}, Value: ${factValue}, Type: ${typeof factValue}`,
+        );
+      } else {
+        console.warn(`Fact "${factName}" is missing in query. Skipping...`);
       }
     }
 
@@ -63,12 +72,44 @@ export class RulesService implements OnModuleInit {
   async evaluate(query: Record<string, any>) {
     const facts = this.extractFactsFromQuery(query);
 
-    const results = await this.engine.run(facts);
+    console.log('Extracted Facts:', JSON.stringify(facts, null, 2));
 
-    return results.events.map((event) => ({
-      type: event.type,
-      value: event.params.value,
-    }));
+    const filteredRules = this.rules.filter((rule) =>
+      rule.conditions.all.every((condition) =>
+        facts.hasOwnProperty(condition.fact),
+      ),
+    );
+
+    if (filteredRules.length === 0) {
+      console.log('No applicable rules found for the provided query.');
+      return [];
+    }
+
+    // Create a temporary engine for the filtered rules
+    const tempEngine = new Engine();
+    filteredRules.forEach((rule) => tempEngine.addRule(rule));
+
+    // Run the engine with the extracted facts
+    try {
+      const results = await tempEngine.run(facts);
+
+      if (results.events.length === 0) {
+        console.log('No events triggered for the provided facts.');
+        return [];
+      }
+
+      const triggeredEvents = results.events.map((event) => ({
+        type: event.type,
+        value: event.params.value,
+      }));
+
+      console.log('Triggered Events:', triggeredEvents);
+
+      return triggeredEvents;
+    } catch (error) {
+      console.error('Error during rule evaluation:', error);
+      throw error;
+    }
   }
 
   async calculate(facts: Record<string, any>): Promise<number> {
