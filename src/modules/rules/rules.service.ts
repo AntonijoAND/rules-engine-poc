@@ -112,26 +112,32 @@ export class RulesService implements OnModuleInit {
     }
   }
 
-  async calculate(facts: Record<string, any>): Promise<number> {
-    const data = await this.evaluate(facts);
+  async calculate(query: Record<string, any>): Promise<number> {
+    console.log('QUERY', query);
+    const data = await this.evaluate(query);
 
     console.log('DATA', data);
 
     const {
-      floorArea = 0,
-      heatLossCoeficient: heatLossCoefficient = 0,
-      radiatorsPrice = 0,
-      hotWaterCylinderSize = 0,
+      floorArea,
+      heatLossCoefficient,
+      radiatorsPrice,
+      hotWaterCylinderSize,
     } = Object.fromEntries(data.map(({ type, value }) => [type, value]));
 
     const heatPumpSize =
       (floorArea *
         heatLossCoefficient *
-        Number(facts.temperatureDifference || 0)) /
+        Number(query.temperatureDifference || 0)) /
       1000;
 
     console.log('HEAT PUMP SIZE', heatPumpSize);
 
-    return heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
+    if (hotWaterCylinderSize) {
+      return heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
+    } else {
+      console.log('NO CYLINDER');
+      return heatPumpSize + radiatorsPrice;
+    }
   }
 }
