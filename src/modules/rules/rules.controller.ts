@@ -13,11 +13,11 @@ export class RulesController {
     return this.rulesService.evaluate(query);
   }
 
-  @Get('/calculate')
-  async calculate(
-    @Query()
-    query: Record<string, any>,
-  ) {
-    return this.rulesService.calculate(query);
-  }
+  // @Get('/calculate')
+  // async calculate(
+  //   @Query()
+  //   query: Record<string, any>,
+  // ) {
+  //   return this.rulesService.calculate(query);
+  // }
 }

@@ -1,4 +1,4 @@
-const radiators = [
+const radiatorsPriceRules = [
   {
     conditions: {
       all: [
@@ -88,7 +88,7 @@ const radiators = [
     conditions: {
       all: [
         {
-          fact: 'noBedrooms',
+          fact: 'radiators',
           operator: 'greaterThan',
           value: 8,
         },
@@ -103,4 +103,4 @@ const radiators = [
   },
 ];
 
-export default radiators;
+export default radiatorsPriceRules;

@@ -1,4 +1,4 @@
-const hotWaterCylider = [
+const hotWaterCyliderRules = [
   {
     conditions: {
       all: [
@@ -103,4 +103,4 @@ const hotWaterCylider = [
   },
 ];
 
-export default hotWaterCylider;
+export default hotWaterCyliderRules;

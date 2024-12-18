@@ -1,143 +1,58 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as fs from 'fs';
-import { Engine } from 'json-rules-engine';
-import * as path from 'path';
+import { FloorAreaEngine } from './engines/floor-area.engine';
+import { HotWaterCyliderEngine } from './engines/hot-water-cylinder.engine';
+import { InsulationLevelEngine } from './engines/insulation-level.engine';
+import { RadiatorsPriceEngine } from './engines/radiators-price.engine';
+
+import { RuleEngineBase } from './engines/rule-engine.base';
 
 @Injectable()
 export class RulesService implements OnModuleInit {
-  private engine: Engine;
-  private rules: any[] = [];
+  private engines: RuleEngineBase[] = [];
 
-  constructor() {
-    this.engine = new Engine();
+  onModuleInit() {
+    this.setupEngines();
   }
 
-  async onModuleInit() {
-    await this.loadRules();
+  private setupEngines() {
+    this.engines.push(new FloorAreaEngine());
+    this.engines.push(new RadiatorsPriceEngine());
+    this.engines.push(new HotWaterCyliderEngine());
+    this.engines.push(new InsulationLevelEngine());
   }
 
-  private async loadRules() {
-    const rulesDirectory = path.join(__dirname, 'rules');
-    const ruleFiles = fs.readdirSync(rulesDirectory);
-
-    for (const file of ruleFiles) {
-      if (file.endsWith('.rule.js')) {
-        const ruleModule = await import(path.join(rulesDirectory, file));
-        const rules = ruleModule.default || ruleModule;
-
-        if (Array.isArray(rules)) {
-          rules.forEach((rule) => {
-            this.engine.addRule(rule);
-            this.rules.push(rule);
-          });
-        } else {
-          console.warn(`File ${file} does not export an array of rules.`);
-        }
-      }
-    }
-  }
-
-  addRule(rule: any) {
-    this.engine.addRule(rule);
-    this.rules.push(rule);
-  }
-
-  private extractFactsFromQuery(query: Record<string, any>) {
-    const facts: Record<string, any> = {};
-    const factSet = new Set<string>();
-
-    for (const rule of this.rules) {
-      for (const condition of rule.conditions.all) {
-        factSet.add(condition.fact);
-      }
-    }
-
-    for (const factName of factSet) {
-      if (query[factName] !== undefined) {
-        const rawValue = query[factName];
-        const factValue = isNaN(rawValue) ? rawValue : Number(rawValue);
-        facts[factName] = factValue;
-
-        console.log(
-          `Extracted Fact - Name: ${factName}, Value: ${factValue}, Type: ${typeof factValue}`,
-        );
-      } else {
-        console.warn(`Fact "${factName}" is missing in query. Skipping...`);
-      }
-    }
-
-    return facts;
+  private identifyEngines(query: Record<string, any>): RuleEngineBase[] {
+    return this.engines.filter((engine) => {
+      const facts = engine.extractFacts(query);
+      return Object.values(facts).every((fact) => fact !== undefined);
+    });
   }
 
   async evaluate(query: Record<string, any>) {
-    const facts = this.extractFactsFromQuery(query);
+    const enginesToRun = this.identifyEngines(query);
 
-    console.log('Extracted Facts:', JSON.stringify(facts, null, 2));
-
-    const filteredRules = this.rules.filter((rule) =>
-      rule.conditions.all.every((condition) =>
-        facts.hasOwnProperty(condition.fact),
-      ),
-    );
-
-    if (filteredRules.length === 0) {
-      console.log('No applicable rules found for the provided query.');
+    if (enginesToRun.length === 0) {
+      console.warn('No matching engines found for the provided query.');
       return [];
     }
 
-    // Create a temporary engine for the filtered rules
-    const tempEngine = new Engine();
-    filteredRules.forEach((rule) => tempEngine.addRule(rule));
+    const allResults: { type: string; value: any }[] = [];
 
-    // Run the engine with the extracted facts
-    try {
-      const results = await tempEngine.run(facts);
-
-      if (results.events.length === 0) {
-        console.log('No events triggered for the provided facts.');
-        return [];
+    for (const engine of enginesToRun) {
+      try {
+        const engineResults = await engine.evaluate(query);
+        console.log(`Results from ${engine.constructor.name}:`, engineResults);
+        if (engineResults && engineResults.length > 0) {
+          allResults.push(...engineResults);
+        }
+      } catch (error) {
+        console.error(
+          `Error running engine "${engine.constructor.name}":`,
+          error,
+        );
       }
-
-      const triggeredEvents = results.events.map((event) => ({
-        type: event.type,
-        value: event.params.value,
-      }));
-
-      console.log('Triggered Events:', triggeredEvents);
-
-      return triggeredEvents;
-    } catch (error) {
-      console.error('Error during rule evaluation:', error);
-      throw error;
     }
-  }
 
-  async calculate(query: Record<string, any>): Promise<number> {
-    console.log('QUERY', query);
-    const data = await this.evaluate(query);
-
-    console.log('DATA', data);
-
-    const {
-      floorArea,
-      heatLossCoefficient,
-      radiatorsPrice,
-      hotWaterCylinderSize,
-    } = Object.fromEntries(data.map(({ type, value }) => [type, value]));
-
-    const heatPumpSize =
-      (floorArea *
-        heatLossCoefficient *
-        Number(query.temperatureDifference || 0)) /
-      1000;
-
-    console.log('HEAT PUMP SIZE', heatPumpSize);
-
-    if (hotWaterCylinderSize) {
-      return heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
-    } else {
-      console.log('NO CYLINDER');
-      return heatPumpSize + radiatorsPrice;
-    }
+    return allResults;
   }
 }

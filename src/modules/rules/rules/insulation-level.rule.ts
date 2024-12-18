@@ -1,4 +1,4 @@
-const insulationLevel = [
+const insulationLevelRules = [
   {
     conditions: {
       all: [
@@ -52,4 +52,4 @@ const insulationLevel = [
   },
 ];
 
-export default insulationLevel;
+export default insulationLevelRules;
