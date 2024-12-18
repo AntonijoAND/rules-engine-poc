@@ -55,4 +55,31 @@ export class RulesService implements OnModuleInit {
 
     return allResults;
   }
+
+  async calculate(query: Record<string, any>): Promise<number> {
+    const data = await this.evaluate(query);
+
+    console.log('DATA', data);
+
+    const {
+      floorArea = 0,
+      heatLossCoefficient = 1,
+      radiatorsPrice = 0,
+      hotWaterCylinderSize = 0,
+    } = Object.fromEntries(data.map(({ type, value }) => [type, value]));
+
+    const heatPumpSize =
+      (floorArea *
+        heatLossCoefficient *
+        Number(query.temperatureDifference || 1)) /
+      1000;
+
+    console.log('HEAT PUMP SIZE', heatPumpSize);
+
+    if (hotWaterCylinderSize) {
+      return heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
+    } else {
+      return heatPumpSize + radiatorsPrice;
+    }
+  }
 }
