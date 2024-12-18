@@ -1,5 +1,6 @@
 const radiators = [
   {
+    engine: 'radiatorsEngine',
     conditions: {
       all: [
         {
@@ -17,6 +18,7 @@ const radiators = [
     },
   },
   {
+    engine: 'radiatorsEngine',
     conditions: {
       all: [
         {
@@ -34,6 +36,7 @@ const radiators = [
     },
   },
   {
+    engine: 'radiatorsEngine',
     conditions: {
       all: [
         {
@@ -51,6 +54,7 @@ const radiators = [
     },
   },
   {
+    engine: 'radiatorsEngine',
     conditions: {
       all: [
         {
@@ -68,6 +72,7 @@ const radiators = [
     },
   },
   {
+    engine: 'radiatorsEngine',
     conditions: {
       all: [
         {
@@ -85,10 +90,11 @@ const radiators = [
     },
   },
   {
+    engine: 'radiatorsEngine',
     conditions: {
       all: [
         {
-          fact: 'noBedrooms',
+          fact: 'radiators',
           operator: 'greaterThan',
           value: 8,
         },

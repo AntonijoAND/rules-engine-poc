@@ -1,5 +1,6 @@
 const insulationLevel = [
   {
+    engine: 'insulationLevelEngine',
     conditions: {
       all: [
         {
@@ -17,6 +18,7 @@ const insulationLevel = [
     },
   },
   {
+    engine: 'insulationLevelEngine',
     conditions: {
       all: [
         {
@@ -34,6 +36,7 @@ const insulationLevel = [
     },
   },
   {
+    engine: 'insulationLevelEngine',
     conditions: {
       all: [
         {

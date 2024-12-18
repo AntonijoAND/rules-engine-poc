@@ -5,12 +5,8 @@ import * as path from 'path';
 
 @Injectable()
 export class RulesService implements OnModuleInit {
-  private engine: Engine;
-  private rules: any[] = [];
-
-  constructor() {
-    this.engine = new Engine();
-  }
+  private engines: Map<string, Engine> = new Map();
+  private rules: Record<string, any[]> = {};
 
   async onModuleInit() {
     await this.loadRules();
@@ -26,10 +22,15 @@ export class RulesService implements OnModuleInit {
         const rules = ruleModule.default || ruleModule;
 
         if (Array.isArray(rules)) {
-          rules.forEach((rule) => {
-            this.engine.addRule(rule);
-            this.rules.push(rule);
-          });
+          for (const rule of rules) {
+            const engineName = rule.engine || 'default';
+            if (!this.engines.has(engineName)) {
+              this.engines.set(engineName, new Engine());
+              this.rules[engineName] = [];
+            }
+            this.engines.get(engineName).addRule(rule);
+            this.rules[engineName].push(rule);
+          }
         } else {
           console.warn(`File ${file} does not export an array of rules.`);
         }
@@ -37,16 +38,37 @@ export class RulesService implements OnModuleInit {
     }
   }
 
-  addRule(rule: any) {
-    this.engine.addRule(rule);
-    this.rules.push(rule);
+  private identifyEnginesBasedOnFacts(query: Record<string, any>): string[] {
+    const matchingEngines: string[] = [];
+
+    for (const [engineName, ruleSet] of Object.entries(this.rules)) {
+      const requiredFacts = new Set<string>();
+
+      ruleSet.forEach((rule) => {
+        rule.conditions.all.forEach((condition) => {
+          requiredFacts.add(condition.fact);
+        });
+      });
+
+      const hasRelevantFacts = [...requiredFacts].some((fact) => fact in query);
+
+      if (hasRelevantFacts) {
+        matchingEngines.push(engineName);
+      }
+    }
+
+    return matchingEngines;
   }
 
-  private extractFactsFromQuery(query: Record<string, any>) {
+  private extractFactsForEngine(
+    query: Record<string, any>,
+    engineName: string,
+  ) {
     const facts: Record<string, any> = {};
-    const factSet = new Set<string>();
+    const ruleSet = this.rules[engineName] || [];
 
-    for (const rule of this.rules) {
+    const factSet = new Set<string>();
+    for (const rule of ruleSet) {
       for (const condition of rule.conditions.all) {
         factSet.add(condition.fact);
       }
@@ -70,53 +92,60 @@ export class RulesService implements OnModuleInit {
   }
 
   async evaluate(query: Record<string, any>) {
-    const facts = this.extractFactsFromQuery(query);
+    const engineNames = this.identifyEnginesBasedOnFacts(query);
 
-    console.log('Extracted Facts:', JSON.stringify(facts, null, 2));
+    console.log('ENGINE NAMES:', engineNames);
 
-    const filteredRules = this.rules.filter((rule) =>
-      rule.conditions.all.every((condition) =>
-        facts.hasOwnProperty(condition.fact),
-      ),
-    );
-
-    if (filteredRules.length === 0) {
-      console.log('No applicable rules found for the provided query.');
+    if (engineNames.length === 0) {
+      console.warn(
+        `No matching engines found for provided facts. Query: ${JSON.stringify(query)}`,
+      );
       return [];
     }
 
-    // Create a temporary engine for the filtered rules
-    const tempEngine = new Engine();
-    filteredRules.forEach((rule) => tempEngine.addRule(rule));
+    const results: Array<{ type: string; value: any }> = [];
 
-    // Run the engine with the extracted facts
-    try {
-      const results = await tempEngine.run(facts);
-
-      if (results.events.length === 0) {
-        console.log('No events triggered for the provided facts.');
-        return [];
+    for (const engineName of engineNames) {
+      if (!this.engines.has(engineName)) {
+        console.warn(`Engine "${engineName}" is not registered.`);
+        continue;
       }
 
-      const triggeredEvents = results.events.map((event) => ({
-        type: event.type,
-        value: event.params.value,
-      }));
+      const engine = this.engines.get(engineName);
+      const facts = this.extractFactsForEngine(query, engineName);
 
-      console.log('Triggered Events:', triggeredEvents);
+      console.log(
+        `Running Engine: ${engineName}, Facts:`,
+        JSON.stringify(facts, null, 2),
+      );
 
-      return triggeredEvents;
-    } catch (error) {
-      console.error('Error during rule evaluation:', error);
-      throw error;
+      try {
+        const engineResults = await engine.run(facts);
+        const engineEvents = engineResults.events.map((event) => ({
+          type: event.type,
+          value: event.params.value,
+        }));
+
+        console.log(`Triggered Events for "${engineName}":`, engineEvents);
+
+        results.push(...engineEvents);
+      } catch (error) {
+        console.error(
+          `Error during evaluation for engine "${engineName}":`,
+          error,
+        );
+      }
     }
+
+    if (results.length === 0) {
+      console.log('No events triggered for any engines.');
+    }
+
+    return results;
   }
 
   async calculate(query: Record<string, any>): Promise<number> {
-    console.log('QUERY', query);
     const data = await this.evaluate(query);
-
-    console.log('DATA', data);
 
     const {
       floorArea,
@@ -131,12 +160,9 @@ export class RulesService implements OnModuleInit {
         Number(query.temperatureDifference || 0)) /
       1000;
 
-    console.log('HEAT PUMP SIZE', heatPumpSize);
-
     if (hotWaterCylinderSize) {
       return heatPumpSize + hotWaterCylinderSize + radiatorsPrice;
     } else {
-      console.log('NO CYLINDER');
       return heatPumpSize + radiatorsPrice;
     }
   }
