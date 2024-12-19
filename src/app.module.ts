@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RulesController } from './modules/rules/rules.controller';
-import { RulesModule } from './modules/rules/rules.module';
-import { RulesService } from './modules/rules/rules.service';
+import { HeatPumpModule } from './modules/heat-pump/heat-pump.module';
+import { RulesEngineModule } from './modules/rules-engine/rules-engine.module';
 
 @Module({
-  imports: [RulesModule],
-  controllers: [AppController, RulesController],
-  providers: [AppService, RulesService],
+  imports: [RulesEngineModule, HeatPumpModule],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
