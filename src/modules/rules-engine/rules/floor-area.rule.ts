@@ -1,4 +1,4 @@
-const floorArea = [
+const floorAreaRules = [
   {
     conditions: {
       all: [
@@ -441,4 +441,4 @@ const floorArea = [
   },
 ];
 
-export default floorArea;
+export default floorAreaRules;

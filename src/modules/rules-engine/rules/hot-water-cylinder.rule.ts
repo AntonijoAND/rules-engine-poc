@@ -1,18 +1,18 @@
-const radiators = [
+const hotWaterCyliderRules = [
   {
     conditions: {
       all: [
         {
-          fact: 'radiators',
-          operator: 'lessThanInclusive',
-          value: 4,
+          fact: 'noBedrooms',
+          operator: 'equal',
+          value: 1,
         },
       ],
     },
     event: {
-      type: 'radiatorsPrice',
+      type: 'hotWaterCylinderSize',
       params: {
-        value: 800,
+        value: 100,
       },
     },
   },
@@ -20,67 +20,67 @@ const radiators = [
     conditions: {
       all: [
         {
-          fact: 'radiators',
+          fact: 'noBedrooms',
+          operator: 'equal',
+          value: 2,
+        },
+      ],
+    },
+    event: {
+      type: 'hotWaterCylinderSize',
+      params: {
+        value: 135,
+      },
+    },
+  },
+  {
+    conditions: {
+      all: [
+        {
+          fact: 'noBedrooms',
+          operator: 'equal',
+          value: 3,
+        },
+      ],
+    },
+    event: {
+      type: 'hotWaterCylinderSize',
+      params: {
+        value: 180,
+      },
+    },
+  },
+  {
+    conditions: {
+      all: [
+        {
+          fact: 'noBedrooms',
+          operator: 'equal',
+          value: 4,
+        },
+      ],
+    },
+    event: {
+      type: 'hotWaterCylinderSize',
+      params: {
+        value: 225,
+      },
+    },
+  },
+  {
+    conditions: {
+      all: [
+        {
+          fact: 'noBedrooms',
           operator: 'equal',
           value: 5,
         },
       ],
     },
     event: {
-      type: 'radiatorsPrice',
+      type: 'hotWaterCylinderSize',
       params: {
-        value: 1000,
-      },
-    },
-  },
-  {
-    conditions: {
-      all: [
-        {
-          fact: 'radiators',
-          operator: 'equal',
-          value: 6,
-        },
-      ],
-    },
-    event: {
-      type: 'radiatorsPrice',
-      params: {
-        value: 1200,
-      },
-    },
-  },
-  {
-    conditions: {
-      all: [
-        {
-          fact: 'radiators',
-          operator: 'equal',
-          value: 7,
-        },
-      ],
-    },
-    event: {
-      type: 'radiatorsPrice',
-      params: {
-        value: 1400,
-      },
-    },
-  },
-  {
-    conditions: {
-      all: [
-        {
-          fact: 'radiators',
-          operator: 'equal',
-          value: 8,
-        },
-      ],
-    },
-    event: {
-      type: 'radiatorsPrice',
-      params: {
-        value: 1600,
+        value: 270,
       },
     },
   },
@@ -90,17 +90,17 @@ const radiators = [
         {
           fact: 'noBedrooms',
           operator: 'greaterThan',
-          value: 8,
+          value: 6,
         },
       ],
     },
     event: {
-      type: 'radiatorsPrice',
+      type: 'hotWaterCylinderSize',
       params: {
-        value: 1800,
+        value: 300,
       },
     },
   },
 ];
 
-export default radiators;
+export default hotWaterCyliderRules;
